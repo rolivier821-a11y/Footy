@@ -50,9 +50,11 @@ def api_get(endpoint, params=None):
     r.raise_for_status()
     return r.json()
 
-@st.cache_data(ttl=600)
-def get_fixtures(date_str):
-    return api_get("fixtures", {"date": date_str}).get("response", [])
+@st.cache_data(ttl=600, show_spinner=False)
+def get_next_fixtures_for_league(league_id: int, season: int, n: int = 15) -> list:
+    data = api_get("fixtures", {"league": league_id, "season": season, "next": n})
+    return data.get("response", [])
+
 
 @st.cache_data(ttl=1800)
 def get_standings(league_id, season):
